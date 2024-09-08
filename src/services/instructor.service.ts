@@ -3,17 +3,13 @@ import { Upload } from "@aws-sdk/lib-storage";
 import { s3 } from "../config/s3.config";
 import { IInstructorService } from "../interfaces/iInstructorInterfaces";
 import { IInstructorRepository } from "../interfaces/iInstructorRepository";
-import { IUserRepository } from "../interfaces/IUserRepository";
 import { Instructor } from "../model/instructor.entities";
 import crypto from "crypto";
 import { S3Params } from "../interfaces/iServiceInterfaces";
 import "dotenv/config";
 
 export class InstructorService implements IInstructorService {
-  constructor(
-    private instructorRepository: IInstructorRepository,
-    private userRepository: IUserRepository
-  ) {}
+  constructor(private instructorRepository: IInstructorRepository) {}
 
   async userRegister(data: Instructor) {
     const {
@@ -42,10 +38,6 @@ export class InstructorService implements IInstructorService {
       Body: Buffer.from(buffer?.data || ""),
       ContentType: mimeType,
     };
-    // const upload = new Upload({
-    //   client: s3,
-    //   params
-    // })
     console.log(params);
 
     try {
@@ -74,16 +66,25 @@ export class InstructorService implements IInstructorService {
 
     const instructor = await this.instructorRepository.register(userData);
     if (instructor) {
-      // const updateUserRole = await this.userRepository.changeRole(userId);
-      // console.log("Role changed");
-
-      // const result = Buffer.from(JSON.stringify(updateUserRole));
-      // console.log(result);
-
-      // return result;
       return instructor;
     } else {
       return "error adding instructor";
+    }
+  }
+
+  async getInstructor(userId: string) {
+    try {
+      console.log("user Service:", userId);
+      
+      const instructor = await this.instructorRepository.findByUserId(userId);
+      if (instructor) {
+        return instructor;
+      } else {
+        return "Instructor not found";
+      }
+    } catch (error) {
+      console.error("Error fetching instructor:", error);
+      throw new Error("Error fetching instructor");
     }
   }
 }

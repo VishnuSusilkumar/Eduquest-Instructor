@@ -4,8 +4,10 @@ import InstructorModel from "../model/schemas/instructor.schema";
 
 export class InstructorRepository implements IInstructorRepository {
   async register(data: Instructor) {
-    console.log("Entered into model");
-    
     return await InstructorModel.create(data);
+  }
+
+  async findByUserId(userId: string) {
+    return await InstructorModel.findOne({ userId });
   }
 }

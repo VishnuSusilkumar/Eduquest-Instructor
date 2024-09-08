@@ -1,12 +1,10 @@
 import { InstructorController } from "../controller/instructorController";
 import { InstructorRepository } from "../respository/instructor.repository";
-import { UserRepository } from "../respository/user.repository";
 import { InstructorService } from "../services/instructor.service";
 import rabbitClient from "./client";
 
-const userRepository = new UserRepository();
 const instructorRepository = new InstructorRepository();
-const service = new InstructorService(instructorRepository, userRepository);
+const service = new InstructorService(instructorRepository);
 const controller = new InstructorController(service);
 
 export default class MessageHandler {
@@ -23,6 +21,10 @@ export default class MessageHandler {
     switch (operation) {
       case "register-instructor":
         response = await controller.registerInstructor.bind(controller)(data);
+        break;
+
+      case "get-instructor":
+        response = await controller.getInstructor.bind(controller)(data.id);
         break;
 
       default:

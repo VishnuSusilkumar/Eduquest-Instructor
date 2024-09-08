@@ -5,16 +5,19 @@ export class InstructorController {
 
   registerInstructor = async (data: any) => {
     try {
-      console.log("Entered into service");
-      
       const response = await this.service.userRegister(data);
-      console.log("Response Returned");
-      
       return response;
     } catch (e: any) {
       console.log(e);
     }
   };
+
+  getInstructor = async (id: string) => {
+    try {
+      const instructor = await this.service.getInstructor(id);
+      return instructor;
+    } catch (e: any) {
+      console.log(e);
+    }
+  };
 }
-
-
